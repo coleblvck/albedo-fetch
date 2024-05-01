@@ -46,6 +46,16 @@ pub struct SolBody {
     pub body_type: Option<String>,
 }
 
+impl SolBodies {
+    pub async fn get() -> Result<Self, Error> {
+        let fetch_client = Client::new();
+        let get_response = fetch_client.get(SOL_BODIES_URL).send().await.unwrap();
+        let bodies = get_response.json::<Self>().await?;
+
+        Ok(bodies)
+    }
+}
+
 #[derive(Deserialize)]
 pub struct SolBodyMoon {
     pub moon: String,
@@ -71,14 +81,6 @@ pub struct SolBodyVol {
 pub struct SolBodyAroundPlanet {
     pub planet: String,
     pub rel: String,
-}
-
-pub async fn get_sol_bodies() -> Result<SolBodies, Error> {
-    let fetch_client = Client::new();
-    let get_response = fetch_client.get(SOL_BODIES_URL).send().await.unwrap();
-    let bodies = get_response.json::<SolBodies>().await?;
-
-    Ok(bodies)
 }
 
 //#[cfg(test)]
